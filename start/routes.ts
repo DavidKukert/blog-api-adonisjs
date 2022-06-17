@@ -27,3 +27,5 @@ Route.get('/', async () => {
 Route.resource('users', 'UsersController').apiOnly()
 
 Route.resource('posts', 'PostsController').apiOnly()
+
+Route.resource('tags', 'TagsController').apiOnly()
