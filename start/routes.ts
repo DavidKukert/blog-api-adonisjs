@@ -29,6 +29,7 @@ Route.resource('users', 'UsersController').apiOnly()
 Route.resource('permissions', 'PermissionsController').apiOnly()
 
 Route.resource('roles', 'RolesController').apiOnly()
+Route.put('roles/:id/permissions', 'RolesController.permissions')
 
 Route.resource('posts', 'PostsController').apiOnly()
 

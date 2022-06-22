@@ -3,13 +3,16 @@ import Role from 'App/Models/Role'
 
 export default class RolesController {
     public async index(ctx: HttpContextContract) {
-        const roles = await Role.query()
+        const roles = await Role.query().preload('permissions')
         return ctx.response.json(roles)
     }
 
     public async show(ctx: HttpContextContract) {
         const id = ctx.params.id
         const role = await Role.findOrFail(id)
+
+        await role.load('permissions')
+
         return ctx.response.json(role)
     }
 
@@ -40,5 +43,16 @@ export default class RolesController {
         const role = await Role.findOrFail(id)
         await role.delete()
         return ctx.response.json(role.$isDeleted)
+    }
+
+    public async permissions(ctx: HttpContextContract) {
+        if (ctx.request.method() === 'PUT') {
+            const id = ctx.params.id
+            const { permissionsId } = ctx.request.only(['permissionsId'])
+            const role = await Role.find(id)
+            await role?.related('permissions').sync(permissionsId)
+            return ctx.response.json(role?.$isPersisted)
+        }
+        return ctx.response.status(500)
     }
 }
